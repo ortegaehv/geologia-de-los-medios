@@ -49,7 +49,7 @@
     const hydra = new Hydra({ detectAudio: false });
 
     const palabras = {
-  mag = () => {
+  mag: () => {
   osc(200, () => a.fft[0] * 0.5, 10).out(o2)
   let shape = osc(10, 0.05, 1.5)
     .mult(noise(0.2, 0.5))
