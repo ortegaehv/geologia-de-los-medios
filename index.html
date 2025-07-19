@@ -50,7 +50,7 @@
 
     const palabras = {
       magnet: () => osc(60,0.1,2).mult(noise([2,3,4],4)).rotate(12),
-      kenya: () => noise(2, 0.5, 2).colorama(-0.9),
+      static: () => noise(1000,0.1).thresh(0.5,0.1).modulateKaleid(osc(1).kaleid(10),30).colorama([.99,.23,.3,.101].fast([100])),
       fuego: () => noise(6, 0.5, 2).colorama(0.2).modulateScale(o0, 0.8),
       delirio: () => osc(10, 0.5, 2).colorama(-0.9).modulate(o0, 0.5),
       amor: () => voronoi(2, 0.5, 2).colorama(-0.9).modulate(osc(3, 0.5, 1), 0.5),
