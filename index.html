@@ -57,7 +57,7 @@
   shape.out()
   return shape
 },
-luz = () => {
+luz: () => {
   osc(() => a.fft[0] * 200, 3, 25).out(o1)
   let shape = osc(100, 0.1, 2)
     .mult(noise(1, 4))
