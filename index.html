@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Hydra Sublenguaje</title>
+  <script src="https://unpkg.com/hydra-synth"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: black;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    #input {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 600px;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 18px;
+      border: 2px solid white;
+      border-radius: 10px;
+      padding: 10px;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="input" placeholder="Escribe: amor,delirio,kenya o simplemente fuego..."></textarea>
+
+  <script>
+    const hydra = new Hydra({ detectAudio: false });
+
+    const palabras = {
+      paco: () => osc(2, 0.5, 2).colorama(0.1),
+      kenya: () => noise(2, 0.5, 2).colorama(-0.9),
+      fuego: () => noise(6, 0.5, 2).colorama(0.2).modulateScale(o0, 0.8),
+      delirio: () => osc(10, 0.5, 2).colorama(-0.9).modulate(o0, 0.5),
+      amor: () => voronoi(2, 0.5, 2).colorama(-0.9).modulate(osc(3, 0.5, 1), 0.5),
+      remix: () => noise(3, 0.4).modulate(osc(2, 0.5, 2), 0.9).diff(noise(2, 0.5, 2)),
+    };
+
+    const input = document.getElementById("input");
+
+    input.addEventListener("input", () => {
+      const texto = input.value.toLowerCase().trim();
+
+      // Si contiene comas: modulación encadenada
+      if (texto.includes(",")) {
+        const modWords = texto.split(",").map(w => w.trim()).filter(w => palabras[w]);
+        if (modWords.length >= 2) {
+          let base = palabras[modWords[0]]();
+          for (let i = 1; i < modWords.length; i++) {
+            base = palabras[modWords[i]]().modulate(base, 0.5 + 0.3 * Math.random()); // modulación aleatoria
+          }
+          base.out();
+          return;
+        }
+      }
+
+      // Si no hay coma, renderiza todo en capas independientes
+      const entradas = texto.split(/\s+/).map(w => w.trim()).filter(w => palabras[w]);
+      if (entradas.length > 0) {
+        // Componer blend entre todas
+        let comp = palabras[entradas[0]]();
+        for (let i = 1; i < entradas.length; i++) {
+          comp = comp.diff(palabras[entradas[i]](), 0.5);
+        }
+        comp.out();
+      }
+    });
+  </script>
+</body>
+</html>
