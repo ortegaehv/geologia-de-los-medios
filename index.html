@@ -49,7 +49,15 @@
     const hydra = new Hydra({ detectAudio: false });
 
     const palabras = {
-      magnet: () => osc(60,0.1,2).mult(noise([2,3,4],4)).rotate(12),
+      magnet: () => osc(200, () => a.fft[0] * 0.5, 10).out(o2)
+  let shape = osc(10, 0.05, 1.5)
+    .mult(noise(0.5, 0.5))
+    .rotate(() => Math.sin(time * 0.1) * 0.3)
+    .scale(() => 1 + Math.sin(time * 0.05) * 0.1)
+    .kaleid(8) 
+    .modulatePixelate(noise(0.1, 0.2), 40)
+  shape.out(o1)
+  return shape,
       static: () => noise(1000,0.1).thresh(0.5,0.1).modulateKaleid(osc(1).kaleid(10),30).colorama([.99,.23,.3,.101].fast([100])),
       fuego: () => noise(6, 0.5, 2).colorama(0.2).modulateScale(o0, 0.8),
       delirio: () => osc(10, 0.5, 2).colorama(-0.9).modulate(o0, 0.5),
