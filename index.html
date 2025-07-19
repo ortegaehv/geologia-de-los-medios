@@ -57,15 +57,20 @@
   shape.out()
   return shape
 },
-txtr: src(o0)
-  .modulate(src(o0).scale(2), 0.4)
-  .blend(mag(), 0.05)
-  .out(),
-      static: () => noise(1000,0.1).thresh(0.5,0.1).modulateKaleid(osc(1).kaleid(10),30).colorama([.99,.23,.3,.101].fast([100])),
-      fuego: () => noise(6, 0.5, 2).colorama(0.2).modulateScale(o0, 0.8),
-      delirio: () => osc(10, 0.5, 2).colorama(-0.9).modulate(o0, 0.5),
-      amor: () => voronoi(2, 0.5, 2).colorama(-0.9).modulate(osc(3, 0.5, 1), 0.5),
-      remix: () => noise(3, 0.4).modulate(osc(2, 0.5, 2), 0.9).diff(noise(2, 0.5, 2)),
+luz = () => {
+  osc(() => a.fft[0] * 200, 3, 25).out(o1)
+  let shape = osc(100, 0.1, 2)
+    .mult(noise(1, 4))
+    .rotate(() => (Math.random() - .1) * 0.5 + Math.sin(time * 0.2) * 0.2)
+    .modulate(noise(500,200,3).scale(2), 0.2)
+    .blend(noise(300, 300, 300), 0.3)
+    .diff(gradient(400))
+    .modulateHue(src(o1).scale(20), 5)
+    .saturate(0.5)         // ← desaturación
+  .mask(noise(1,400,300).scale(1.5))
+  shape.out()
+  return shape
+},
     };
 
     const input = document.getElementById("input");
