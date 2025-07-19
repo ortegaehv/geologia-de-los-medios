@@ -57,12 +57,10 @@
   shape.out()
   return shape
 },
-
-txtr: () => {
-src(o0)
+txtr: src(o0)
   .modulate(src(o0).scale(2), 0.4)
   .blend(mag(), 0.05)
-},
+  .out(),
       static: () => noise(1000,0.1).thresh(0.5,0.1).modulateKaleid(osc(1).kaleid(10),30).colorama([.99,.23,.3,.101].fast([100])),
       fuego: () => noise(6, 0.5, 2).colorama(0.2).modulateScale(o0, 0.8),
       delirio: () => osc(10, 0.5, 2).colorama(-0.9).modulate(o0, 0.5),
