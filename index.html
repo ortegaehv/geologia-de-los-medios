@@ -47,31 +47,33 @@
 
   <script>
     const hydra = new Hydra({ detectAudio: false });
-
-    const palabras = {
-   mgnt: () => {
-  osc(() => a.fft[0]*200, 3, 25).out()
-  let shape = osc(60, 0.1, 2)
+magnet: () => {
+  osc(200, () => a.fft[0] * 200, 10).out(o2)
+  let base = osc(60, 0.1, 2)
     .mult(noise(1, 4))
-    .rotate(() => (Math.random(200 - 0.5)) * 0.5 + Math.sin(time * 0.2) * 0.2)
-  shape.out()
-  return shape
+    .rotate(() => (Math.random() - 0.5) * 0.5 + Math.sin(time * 0.2) * 0.2)
+  base.out(o1)
+  let modulado = base
+    .modulate(src(o0).scale(1.5), 1)
+    .blend(o0,.8)
+  .mult(noise(500, .05, 2),.1)
+  .modulateHue(o1)
+  return modulado
 },
 luz: () => {
-  osc(() => a.fft[0] * 200, 3, 25).out(o1)
-  let shape = osc(100, 0.1, 2)
-    .mult(noise(1, 4))
+  osc(() => a.fft[0] * 200, 1, 10).out(o1)
+  let shape = osc(1, 1, 1)
+    .mult(noise(1, 4, 2))
     .rotate(() => (Math.random() - .1) * 0.5 + Math.sin(time * 0.2) * 0.2)
-    .modulate(noise(500,200,3).scale(2), 0.2)
-    .blend(noise(300, 300, 300), 0.3)
-    .diff(gradient(400))
+    .modulate(noise([30,20,10,15],200,3).scale(2), 0.2)
+    .blend(noise(1000, 300, 300), .4)
+    .add(gradient(1))
     .modulateHue(src(o1).scale(20), 5)
-    .saturate(0.5)         // ← desaturación
-  .mask(noise(1,400,300).scale(1.5))
+    .saturate(0.22) 
+  .mask(noise(1,.5,1).scale(1.5))
   shape.out()
   return shape
-}
-    };
+};
 
     const input = document.getElementById("input");
 
